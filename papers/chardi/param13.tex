@@ -1047,10 +1047,10 @@ take
   {\hat{\sigma}_{\text{MAD}}} \overset{d\,|\,H_0}{=} N(0,1).
 \end{equation}
 We can therefore (at each voxel) test the hypotheses that
-$\Phi_0^{(q)}=0$; by calculating an observed value of $T_1$, namely
-$t_1$, and comparing this to the standard Gaussian distribution.  If
-the average phase is non-zero, then this is indicative of either a
-botched removal of phase from movement, or remaining susceptibility
+$\Phi_0^{(q)}=0$; by calculating an observed value of $T_1$ and
+comparing this to the standard Gaussian distribution.  If the average
+phase is non-zero, then this is indicative of either insufficient
+removal of phase induced by movement, or remaining susceptibility
 effects.  In either case, the Hermitian structure is not in this case
 interpretable, as deviating from a non-zero mean.  These voxels should
 be removed from further analysis.
@@ -1104,10 +1104,10 @@ term
 Note that when estimating $\bld{d}$ we also estimate the $\Phi_0(q)$
 term, and so no non-zero mean phase terms will bias our estimation of
 $\bld{d}$ (it is bad practice to estimate the linear term before the
-main effect). Recall that we want to keep a potentially non-zero main
-effect in the model (botched phase removal) and then see what fraction
-of energy is explained by the linear (Hermitian) terms.  A Taylor
-series expansion may justify this (\textit{cf.}
+main effect).  Recall that we want to keep a potentially non-zero main
+effect in the model (insufficient phase removal) and then see what
+fraction of energy is explained by the linear (Hermitian) terms.  A
+Taylor series expansion may justify this (\textit{cf.}
 Eq.~\eqref{taylor:phase2}), and see also the plots in
 Figs.~\ref{bending} and~\ref{forking}.  Since it is true that
 $\sum_j\q_j\approx\bld{0}$ it however makes little difference whether
@@ -1236,13 +1236,10 @@ body transformation.  The co-registered non-diffusion weighted volumes
 were then registered to the co-registered diffusion-weighted volumes
 by another six-parameter rigid body transformation.  Each registration
 step used the FLIRT routine, part of FSL
-\citep{jen-smi:global,smi-etal:FSL}.
-% (Jenkinson M, Smith SM (2001): A global optimisation method for
-% robust affine registration of brain images.  Medical Images Analysis
-% 5(2) 143-156).  
-The transformations determined by this process were then applied to
-the set of 16 corresponding images from the complex-valued data (i.e.,
-real and imaginary images for each of eight coils).
+\citep{jen-smi:global,smi-etal:FSL}.  The transformations determined
+by this process were then applied to the set of 16 corresponding
+images from the complex-valued data (i.e., real and imaginary images
+for each of eight coils).
 
 \subsection{Simulations}
 \label{methods-simulations}
@@ -1316,7 +1313,7 @@ an angle of $\theta$ in the third axis ($q_3$).
 % $\text{BD}(\q_l)$ is a bending diffusion process.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[!htbp]
+\begin{table}[tbp]
   \caption{Summary of fiber population structure models used in the
     simulations.  The functions $\text{G}(\q_l)$ and $\text{HG}(\q_l)$
     are defined in Eqs.~\eqref{GaussianDTI} and \eqref{Dawson},
@@ -1325,7 +1322,7 @@ an angle of $\theta$ in the third axis ($q_3$).
   \begin{center}
     \begin{tabular}{lcc}
       \hline
-      {\bf Name} & {\bf Notation} & {\bf Function}\\
+      \textbf{Name} & \textbf{Notation} & \textbf{Function}\\
       \hline
       Truncated Prolate Diffusion Process & $\text{TPD}(\q_l)$ &
       $\text{HG}(\q_l;\bsL^{(1)},\bld{V})$\\
@@ -1345,23 +1342,57 @@ an angle of $\theta$ in the third axis ($q_3$).
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\begin{eqnarray*}
-%  \label{simeqs}
-%  \text{TPD}(\q_l) &=&   \text{HG}(\q_l; \bsL^{(1)}, \bld{V})\\
-%  \text{PD}(\q_l) &=&   \text{G}(\q_l;  \bsL^{(1)}, \bld{V})\\
-%  \text{ID}(\q_l) &=&   \text{HG}(\q_l; \bsL^{(2)}, \bld{V})\\
-%  \text{FD}(\q_l) &=& \frac{2}{3}\text{G}(\q_l; \bsL^{(1)}, \bld{V})
-%  + \frac{1}{3} \text{HG}(\q_l; \bsL^{(1)}, R_\theta\bld{V})\\
-%  \text{BD}(\q_l) &=& \frac{1}{2} \text{HG}(\q_l; \bsL^{(1)}, \bld{V})
-%  + \frac{1}{2} \text{HG}(\q_l; \bsL^{(1)}, R_\theta\bld{V})
-%\end{eqnarray*}
-%The notation $\text{TPD}(\q_l)$ is a
-%truncated prolate diffusion process, $\text{PD}(\q_l)$ is a prolate
-%diffusion process, $\text{ID}(\q_l)$ is an isotropic diffusion
-%process, $\text{FD}(\q_l)$ is a forking diffusion process and
-%$\text{BD}(\q_l)$ is a bending diffusion process.
+\section{Results}
+\label{results}
+
+\subsection{Simulated data} % see the script testcomplex2.m
+
+We simulate diffusion~PDFs following \citet{Alexander2005} in the
+class of diffusion parameters, but adjust the PDFs to match our choice
+of $b=1300$.  Both in the simulation studies and the clinical data
+acquisition we use a set of gradients determined using the method of
+\citet{DKJones99}.  The signal-plus-noise model is given by
+\begin{eqnarray}
+  Z(\q_l) &=& \cZ^{(k)}(\q_l) + \sigma\epsilon_l + i\sigma\eta_l\\
+  \cZ(\q_l) &=& \cA(\q_l) \exp\left(-i\varphi^{(k)}(\q_l)\right),
+\end{eqnarray}
+where $\cZ(\cdot)$ is one of the fiber population structure models in
+Section~\ref{methods-simulations}, $\epsilon_l$ and $\eta_l$ are
+independent realizations from a Gaussian distribution with equal
+standard deviations of $\text{TPD}(\bld{0})/20$.  We randomize each
+trial over $\{\bsu_1\}$ to avoid consistent directional biases,
+selecting two perpendicular vectors to this eigenvector and force the
+error standard deviation to be $\sigma=1/20$.  We also rotate the
+second basis $\{\bs{\xi}_j\}_j$ with respect to the first by $\theta$
+in the $q_3$ axis, where $\theta\in\{\pi/3,\pi/2\}$.  Because $\bsu_1$
+has a random orientation, no consistent orientational biases are
+accrued by this procedure.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[!htbp]
+\begin{figure}[tbp]
+  \begin{center}
+    \begin{minipage}[]{0.45\textwidth}
+      \centering
+      \textbf{Sparse Sampling}\\
+      \includegraphics[width=\textwidth]{cloudlowden.eps}
+    \end{minipage}
+    \begin{minipage}[]{0.45\textwidth}
+      \centering
+      \textbf{Dense Sampling}\\
+      \includegraphics[width=\textwidth]{cloudhighden.eps}
+    \end{minipage}
+  \end{center}
+  \caption{Directionoal sampling regimes for the simulation study:
+    26~gradient directions (\textit{sparse sampling}) used in the
+    clinical acquisition \citep{DKJones99} and a regular sampling of
+    the sphere with 133~gradient directions (\textit{dense
+      sampling}).}
+  \label{fig:sampling}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[tbp]
   \begin{center}
     \begin{minipage}[]{0.45\textwidth}
       \centering
@@ -1384,110 +1415,82 @@ an angle of $\theta$ in the third axis ($q_3$).
       (d)
     \end{minipage}
   \end{center}
-  \caption{Test statistics from simulations under two $q$-space
-    samplings, where (a,c) are based on 26 gradient directions used in
-    the clinical acquisition and (b,d) use a regular sampling with 133
-    gradient directions.  The color coding is green for the
-    theoretical PDF, maroon for the isotropic, red for the
+  \caption{Test statistics $T_1$ and $T_2$ from simulations under two
+    $q$-space sampling schemes.  \textbf{(a,c)} use the \textit{sparse
+      sampling} scheme and \textbf{(b,d)} use the \textit{dense
+      sampling}) scheme.  The color coding is green for the
+    theoretical diffusion~PDF, maroon for the isotropic, red for the
     half-Gaussian, yellow for the bending fibre, black for the
     branching and blue for the the usual DTI prolate model.
-    \textbf{[Maybe better to have a legend for the colors?]}}
-  \label{fig-0.5}
+    \textbf{[Maybe better to have a legend for the colors?  Thicker
+        lines?]}}
+  \label{fig:T1T2}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Results}
-\label{results}
-% see the script testcomplex2.m
-\subsection{Simulated data}
-
-We simulate diffusion PDFs following \citet{Alexander2005} in the
-class of diffusion parameters, but adjust the PDFs to match our choice
-of $b=1300$.  Both in the simulation studies and the real data
-acquisition we use a set of gradients determined using the method of
-\cite{DKJones99}.  The signal-plus-noie model is given by
-\begin{eqnarray}
-  \cZ(\q_l) &=& \cA(\q_l) \exp\left(-i\varphi^{(k)}(\q_l)\right)\\
-  Z(\q_l) &=& \cZ^{(k)}(\q_l) + \sigma\epsilon_l + i\sigma\eta_l,
-\end{eqnarray}
-where $\cZ(\cdot)$ is one of the fiber population structure models in
-Section~\ref{methods-simulations}, $\epsilon_l$ and $\eta_l$ are
-independent realizations from a Gaussian distribution with equal
-standard deviations of $\text{TPD}(\bld{0})/20$.  We randomize each
-trial over $\{\bsu_1\}$ to avoid consistent directional biases,
-selecting two perpendicular vectors to this eigenvector and force the
-error standard deviation to be $\sigma=1/20$.  We also rotate the
-second basis $\{\bs{\xi}_j\}_j$ with respect to the first by $\theta$
-in the $q_3$ axis, where $\theta\in\{\pi/3,\pi/2\}$.  Because $\bsu_1$
-has a random orientation, no consistent orientational biases are
-accrued by this procedure.
+We simulate the artificial DW-MRI acquisitions 5000 times, and apply
+parametric methods to calculate summary statistics, as outlined in the
+previous section.  Fig.~\ref{fig:sampling} displays the directions
+associated with the sparse sampling scheme (26~directions) and dense
+sampling scheme (133~directions) on the sphere.  First, we look at the
+behavior of the test statistics, the null average phase $T_1$ and the
+Wald statistic$T_2$, under the diffusion models in
+Table~\ref{simulationtable}.
+% Fig.~\ref{fig:T1T2} shows the two statistics of interest $T_1$ and
+% $T_2$, and Fig.~\ref{fig-1} shows the quantitative descriptions of
+% the complex structure.
+When compared with their theoretical distributions, a $N(0,1)$ for the
+$T_1$ statistic and a $\chi^2_3$ for the $T_2$ statistic,
+Fig.~\ref{fig:T1T2} shows the consistent performance of our
+statistics.  The simulated data should have zero average phase and no
+Hermitian phase and this is confirmed by the fact that the empirical
+distributions for each statistic closely match the theoretical
+distribution.  However, we acknowledge the fact that the theoretical
+distribtion for null average phase is more difficult to achieve for
+certain diffusion models using a sparse sampling of directions over
+the sphere.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[!htbp]
+\begin{figure}[tbp]
   \begin{center}
-    \begin{minipage}[]{0.42\textwidth}
+    \begin{minipage}[]{0.45\textwidth}
       \centering
       \includegraphics[width=\textwidth]{inner_product.eps}
-      (a)
+      \textbf{(a)}
     \end{minipage}
-    \begin{minipage}[]{0.42\textwidth}
+    \begin{minipage}[]{0.45\textwidth}
       \centering
       \includegraphics[width=\textwidth]{R2.eps}
-      (b)
-    \end{minipage}
-    \begin{minipage}[]{0.42\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{cloudlowden.eps}
-      (c)
-    \end{minipage}
-    \begin{minipage}[]{0.42\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{cloudhighden.eps}
-      (d)
+      \textbf{(b)}
     \end{minipage}
   \end{center}
-  \caption{The norm of $\bd^{(im)}$ (a), and the $R^2$ from fitting
-    the linear phase term (b), using the sparse $q$-sampling.  The two
-    real-valued diffusions (prolate, blue) and (isotropic, purple),
-    forking fibre (black), a single asymmetric diffusion (red), or
-    bending fibre (yellow).  Two different sampling regimes for which
-    simulations were run (c, sparse sampling) and (d, dense
-    sampling).}
+  \caption{Estimating the linear phase term under the sparse sampling
+    scheme: \textbf{(a)} the norm of $\bd^{(\text{im})}$ and
+    \textbf{(b)} the coefficient of determination $R^2$ from the
+    linear regression.  The two real-valued diffusions (prolate, blue)
+    and (isotropic, purple), forking fibre (black), a single
+    asymmetric diffusion (red), or bending fibre (yellow).}
   \label{fig-1} 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We simulate these artificial diffusions 5000 times, and use the
-parametric methods to calculate summary statistics, as outlined in the
-previous section.  Fig.~\ref{fig-0.5} shows the two statistics of
-interest $T_1$ and $T_2$, under sparse and dense directional sampling
-conditions (see Fig.~\ref{fig-1}(c) and (d) for the sampling schemes),
-and Fig.~\ref{fig-1} shows the quantitative descriptions of the
-complex structure.  Fig.~\ref{fig-0.5} shows the consistent
-performance of our statistics (the null average phase and the Wald
-statistic), even if the null average phase is harder to achieve at a
-sparse sampling of the sphere.  \textbf{[More text about Figure~5!!!]}
-% In both Figures we have the following denominations:
-% $\text{TPD}(\q_l)$ is red, $\text{PD}(\q_l)$ is blue,
-% $\text{ID}(\q_l)$ is maroon, $\text{FD}(\q_l)$ is black and
-% $\text{BD}(\q_l)$ is yellow.  The theoretical distribution (when
-% existing) under some specified null is included in some of the plots
-% in green.
+Additional statistics of interest when estimating the linear phase
+structure are the norm of the imaginary vector $\bd^{(\text{im})}$ and
+the coefficient of determination $R^2$.  In Fig.~\ref{fig-1} it is
+apparent that the asymmetric diffusion~PDFs are clearly distinguished
+from the symmetric PDFs, by observing different values of the Wald
+statistic \textbf{[is this correct?!?]} and that the imaginary
+structure is described by the varying value of the norm of the
+imaginary vector $\bd^{(\text{im})}$.  \textbf{[WHAT?!?]}
 
-To determine the typical norm of the imaginary vector and the $R^2$ we
-also provide Figs.~\ref{fig-1}(a)--(b).  We see from these plots that
-the asymmetric PDFs can clearly be distinguished from the symmetric
-PDFs, by both observing the different values of the Wald statistic,
-and that the imaginary structure is described by the varying value of
-the norm of the phase vector $\bd^{(im)}$.  We would like to
-distinguish between simple forms of the phase, as would be typical for
-bending, and more complex forms that cannot be characterised by a
-linear phase, as in forking, compare with the plots in
-Figs.~\ref{bending}--\ref{forking}.  If one looks at the
-Figs.~\ref{bending}(a,i) and~\ref{bending}(b,i), and compared them to
-Figs.~\ref{forking}(a,i) and~\ref{forking}(b,i), one notices that the
-main structure of Figs.~\ref{bending}(a,i) and~\ref{bending}(b,i)
-could be modelled as linear, but Figs.~\ref{forking}(a,i)
+We would like to distinguish between simple forms of the phase, as
+would be typical for bending, and more complex forms that cannot be
+characterised by a linear phase, as in forking, compare with the plots
+in Figs.~\ref{bending}--\ref{forking}.  If one looks at the
+Figs.~\ref{bending}(a,i) and~\ref{bending}(b,i), and compares them to
+Figs.~\ref{forking}(a,i) and~\ref{forking}(b,i), it is apparent that
+the main structure of Figs.~\ref{bending}(a,i) and~\ref{bending}(b,i)
+may be described as linear, but Figs.~\ref{forking}(a,i)
 and~\ref{forking}(b,i) are clearly not linear.
 Fig.~\ref{forking}(a,i) exhibits additional asymmetry, while
 Fig.~\ref{forking}(b,i) has the additional double maxima.  Such
@@ -1653,22 +1656,22 @@ Fig.~\ref{fig-1}(b).  \textbf{[More discussion about Figure~6!!!]}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[!htbp]
+\begin{figure}[tbp]
   \begin{center}
-    \begin{minipage}[]{.30\textwidth}
+    \begin{minipage}[]{.32\textwidth}
       \centering
       \includegraphics[width=\textwidth]{rejected.eps}
       (a)
-      \end{minipage}
-\begin{minipage}[]{.30\textwidth}
+    \end{minipage}
+    \begin{minipage}[]{.32\textwidth}
       \centering
-       \includegraphics[width=\textwidth]{overlaynew55b.eps}
-       (b)
- \end{minipage}
-\begin{minipage}[]{.30\textwidth}
+      \includegraphics[width=\textwidth]{overlaynew55b.eps}
+      (b)
+    \end{minipage}
+    \begin{minipage}[]{.32\textwidth}
       \centering
-        \includegraphics[width=\textwidth]{overlaynew55ny.eps}
-    (c)
+      \includegraphics[width=\textwidth]{overlaynew55ny.eps}
+      (c)
     \end{minipage}
   \end{center}
   \caption{Three slices from the clinical data acquisition, where
@@ -1680,7 +1683,7 @@ Fig.~\ref{fig-1}(b).  \textbf{[More discussion about Figure~6!!!]}
 
 We show the main directions of the real magnitude (associated with the
 largest eigenvalue) and the gradient of the estimated linear phase in
-Figures~\ref{fig1}(a)--(d), \ref{fig1b}(a)--(d), and
+Figs.~\ref{fig1}(a)--(d), \ref{fig1b}(a)--(d), and
 \ref{fig1c}(a)--(d), all weighted by the FA.  In all three figures we
 have used either (c) a $p$-value of 0.1 to determine whether average
 phase is zero, combined with the FDR procedure with $p=0.01$ on the
@@ -1694,10 +1697,11 @@ gradient of the phase.
 We show the magnitude of the phase vector (Figs.~\ref{fig2}(a,d,g))
 and the $R^2$ associated with fitting the linear phase factor
 (Figs.~\ref{fig2}(b,e,h)), as well as the estimated model order
-(Figs.~\ref{fig2}(c,f,i)).  \textbf{We apply the FDR procedure for
-  multiple comparisons \citep{Benjamini,gen-laz-nic:thresholding} to
-  find the voxels where the mean phase is zero, but exhibits linear
-  structure (Fig.~\ref{fig3b}).}
+(Figs.~\ref{fig2}(c,f,i)).  We apply the false discovery rate (FDR)
+procedure for multiple comparisons
+\citep{Benjamini,gen-laz-nic:thresholding} to determine which voxels
+have an average phase equal to zero, but exhibit linear structure
+(Fig.~\ref{fig3b}).
 %An example of bending appears to be
 %present and is marked by two crosses in Figure \ref{fig3b}(b).  We see
 %that the parametric real model favours a single tensor in one case:
@@ -1740,12 +1744,13 @@ the image (see instead \ref{fig3b}(f)).  \textbf{[Contrast
       \includegraphics[width=0.2\textwidth]{73107.ps}
     \end{tabular}
   \end{center}
-  \caption{\textit{In vivo} data from the same axial slice for (a) a
-    voxel marked in Figure~\ref{fig3b} and (b) a nearby voxel.  For
-    both voxels the columns denote (i) phase, (ii) the magnitude of
-    the real part, (iii) the magnitude of the imaginary part and (iv)
-    the amplitude.  The phase displays typical asymmetry with
-    $R^2=0.64$ for both voxels shown here.}
+  \caption{Two voxels of clinical data from the same axial slice in
+    Fig.~\ref{fig3b}.  For both voxels the columns denote the (i)
+    phase, (ii) magnitude of the real part of the complex-valued
+    signal, (iii) the magnitude of the imaginary part of the
+    complex-valued signal and (iv) the amplitude of the complex-valued
+    signal.  For both voxels provided here the phase displays
+    asymmetry similar to \textbf{???}, with an $R^2=0.64$.}
   \label{fig6}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1759,10 +1764,10 @@ inefficient estimation.
 
 When the spurious phase has been removed, structure remains.  This has
 to do with overall diffusion asymmetries, and allows us to recognize
-bending and (hypothetically) forking structure. In the case of bending,
-it is anticipated that a linear approximation to the phase would be
-sufficient, and the data does confirm this to be the case, with an
-observed $R^2$ of nearly 0.8 in some cases.
+bending and (hypothetically) forking structure.  In the case of
+bending, it is anticipated that a linear approximation to the phase
+would be sufficient, and the data does confirm this to be the case,
+with an observed $R^2$ of nearly 0.8 in some cases.
 
 \textbf{What does it do?}  This information identifies local
 symmetries such as bending or forking, and we can locally describe
