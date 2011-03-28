@@ -73,6 +73,8 @@
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\diag}{diag}
+\DeclareMathOperator*{\sign}{sign}
 \newcommand{\var}{\text{Var}}
 \newcommand{\cov}{\text{Cov}}
 \newcommand{\HOT}{\text{HOT}}
@@ -277,15 +279,16 @@ structure of the diffusion~PDF non-parametrically using generalized
 diffusion tensors by expanding the logarithm of the characteristic
 function in terms of an infinite number of higher-order terms
 \citep{Ozarslan03,Liu2005,Liu2004}.  Care must be taken to
-appropriately normalize the higher order moments by $b$
+appropriately normalize the higher-order moments by $b$
 \cite{Liu2005}.  Practical application of such ideas corresponds to
 diffusion kurtosis imaging (DKI), where the non-Gaussian higher-order
-structure of the PDF is quantified \citep{Jensen2005,Lu2006,Hui2008}.
-In DKI a tensor is calculated using higher-order terms in the
-Kramer-Moyal expansion of the three-dimensional Bolzmann equation, and
-yields additional information about the directional structure of the
-diffusion~PDF.  In \citet{Lazar} an ODF was calculated directly from
-the estimated diffusion tensor and diffusion kurtosis values.
+structure of the diffusion~PDF is quantified
+\citep{Jensen2005,Lu2006,Hui2008}.  In DKI a tensor is calculated
+using higher-order terms in the Kramer-Moyal expansion of the
+three-dimensional Bolzmann equation, and yields additional information
+about the directional structure of the diffusion~PDF.  In
+\citet{Lazar} an ODF was calculated directly from the estimated
+diffusion tensor and diffusion kurtosis values.
 % Higher-order terms may improve the representation of non-Gaussian
 % features of the diffusion process \citep{Lazar}.
 The higher-order terms are necessary to resolve low crossing angles
@@ -310,14 +313,14 @@ It is our aim to design statistical methodology for complex-valued
 HARDI ($\bbC$-HARDI) data that recognize voxels where the diffusion
 process does not appear to be symmetric.  Such information may be used
 directly as an imaging biomarker for disease progression or treatment
-response, or as an input to fiber-tracking algorithms
-\citep{laz:mapping,chu-cho-che:principles}.  We also note that
-analyzing complex-valued MRI measurements has recently been proposed
-in the functional MRI (fMRI) literature.  Several papers by Rowe and
-colleagues have proposed to retrieve biological information from the
-phase of fMRI data \citep{Rowe2004,Rowe2005,Rowe2007}.  The phase
-structure in fMRI may be due to vascular effects \citep{Menon} or
-neuronal effects \citep{Bodurka}.
+response \citep{whi-mat:pitfalls}, or as an input to fiber-tracking
+algorithms \citep{laz:mapping,chu-cho-che:principles}.  We also note
+that analyzing complex-valued MRI measurements has recently been
+proposed in the functional MRI (fMRI) literature.  Several papers by
+Rowe and colleagues have proposed to retrieve biological information
+from the phase of fMRI data \citep{Rowe2004,Rowe2005,Rowe2007}.  The
+phase structure in fMRI may be due to vascular effects \citep{Menon}
+or neuronal effects \citep{Bodurka}.
 
 Including higher-order terms from the Kramer-Moyal expansion of the
 three-dimensional Bolzmann equation implies that even and odd powers
@@ -468,9 +471,7 @@ number of terms and cannot be estimated from finite sample sizes of
 $\bbC$-HARDI data.  To find simple expressions over a range of $\q$
 values we approximate the functions using
 \begin{eqnarray}
-  \nonumber
   P^{(\re)}(\q) &=& -\frac{1}{2} \q^T\bD^{(\re)}\q + e^{(\re)}(\q),\\
-  \nonumber
   P^{(\im)}(\q) &=& P^{(\im)}_q(\q) \quad \text{if} \quad \|\q\|=q,\\
   \label{taylor:phase2}
   P^{(\im)}_q(\q) &=& \Phi_0^{(q)} + \q^T\bd^{(\im)} + e^{(\im)}_q(\q),
@@ -479,9 +480,11 @@ where $\Phi_0^{(q)}$ is the phase-shift term and may pick up the
 remaining bias in the data that the pre-processing steps have not
 resolved (Section~\ref{preprocessing}).  The terms
 \begin{eqnarray}
+  \label{eqn:dim}
   \bd^{(\im)} &=& \begin{pmatrix}
     D^{(1)}_{1} & D^{(1)}_{2} & D^{(1)}_{3}
   \end{pmatrix}^T,\\
+  \label{eqn:Dre}
   \bD^{(\re)} &=& \begin{pmatrix}
     D_{1,1}^{(2)} & D_{1,2}^{(2)} & D_{1,3}^{(2)}\\
     D_{2,1}^{(2)} & D_{2,2}^{(2)} & D_{2,3}^{(2)}\\
@@ -618,7 +621,7 @@ define this transform (i.e., the partial Hilbert Transform in
 direction $\bsu$) in space via
 \begin{equation}
   \cF^{-1}\left\{\cH_{\bsu}\left\{\cA\right\}\right\}(\x) \equiv -i \,
-  \text{sign}\left(\x^T\bsu\right)a_{1e}(\x).
+  \sign\left(\x^T\bsu\right)a_{1e}(\x).
 \end{equation}
 We can therefore write the characteristic function of an asymmetric
 component of the bending fiber PDF as
@@ -912,8 +915,10 @@ imaginary part may be estimated separately, forming the matrices
 We then estimate the parameters $\bs{\alpha}$ and $\bs{\beta}$
 using the least-squares estimators
 \begin{eqnarray}
+  \label{linear-amplitude}
   \hat{\bs{\alpha}} &=& \left(\bld{P}^T\bld{P}\right)^{-1}
   \bld{P}^T\bld{A},\\
+  \label{linear-phase}
   \hat{\bs{\beta}} &=& \left(\bld{R}^T\bld{R}\right)^{-1}\bld{R}^T
   \bs{\Phi},
 \end{eqnarray}
@@ -955,7 +960,7 @@ regression of the logarithm of the magnitudes, a standard method for
 estimating the DTI model \citep{Basser1994}.  We also believe the
 model may not be suitable if the voxel corresponds to cortico-spinal
 fluid (CSF) or grey matter, as in such cases the distributional
-assumptions that make least squares methods suitable are not met. We
+assumptions that make least squares methods suitable are not met.  We
 propose to remove such voxels from our analysis based on their
 fractional anisotropy or mean diffusivity.
 
@@ -1013,15 +1018,19 @@ fractional anisotropy or mean diffusivity.
 %%that we cannot use these terms %in any case.
 
 We wish to test the hypothesis that the preprocessing was successful;
-this case corresponds to the mean phase over a shell being zero
+this case corresponds to the average phase over the shell being zero
 (assuming discretization effects are negligible).  We formulate the
 hypothesis test as
 \begin{equation}
   H_0: \Phi_0^{(q)} = 0 \quad \text{versus} \quad H_1: \Phi_0^{(q)}
-  \neq 0.
+  \neq 0,
 \end{equation}
-Solving the least squares equations provides the estimator
-$\wh{\Phi}_0^{(q)}=(L-L_0)^{-1}\sum_{l=L_0+1}^{L}\phi(\q_l)$ and the
+where $\Phi_0^{(q)}$ is the phase-shift term Eq.~\eqref{taylor:phase2}
+from the Kramer-Moyal formula Eq.~\eqref{kramermoyal}, estimated via
+linear regression in Eq.~\eqref{linear-phase}.  Solving the least
+squares equations explicitly, based on the observed phase terms
+$\phi(\q)$, yields the estimator
+$\wh{\Phi}_0^{(q)}=(L-L_0)^{-1}\sum_{l=L_0+1}^{L}\phi(\q_l)$, and the
 variance of the estimator is given by
 \begin{alignat}{1}
   \var\left\{\wh{\Phi}_0^{(q)}\right\} &= \frac{1}{(L-L_0)^2}
@@ -1031,8 +1040,9 @@ variance of the estimator is given by
 \end{alignat}
 To estimate the components of this expression we need good estimators
 of $\sigma^2$ and $\cA^2(\q_l)$.  We use the method of moments
-estimator of the observed amplitude square for the latter quantity,
-but introduce the robust estimator of
+estimator of the observed amplitude squared for the latter quantity,
+and introduce a robust estimator of $\sigma^2$ given by median
+absolution deviation (MAD)
 \begin{equation}
   \hat{\sigma}_{\text{MAD}} = \sqrt{2} \; \frac{{\text{median}} 
     \left\{\left|\phi(\q_l) - \phi(\q_{b(l)})\right|
@@ -1049,34 +1059,37 @@ take
 We can therefore (at each voxel) test the hypotheses that
 $\Phi_0^{(q)}=0$; by calculating an observed value of $T_1$ and
 comparing this to the standard Gaussian distribution.  If the average
-phase is non-zero, then this is indicative of either insufficient
-removal of phase induced by movement, or remaining susceptibility
+phase is not zero, then this is indicative of either insufficient
+removal of phase induced by movement or remaining susceptibility
 effects.  In either case, the Hermitian structure is not in this case
 interpretable, as deviating from a non-zero mean.  These voxels should
 be removed from further analysis.
 
 \subsubsection{Existence of Hermitian phase structure}
 
-The second test corresponds to testing whether the Hermitian structure
-is non-negligible or:
+The second hypothesis test corresponds to testing whether the
+Hermitian structure is non-negligible
 \begin{equation}
   H_0: \bld{d}^{(\im)} = \bld{0} \quad \text{versus} \quad 
   H_1: \bld{d}^{(\im)} \neq \bld{0}. 
 \end{equation}
-This test is formulating the question, is there any asymmetry in the
-diffusion~PDF, or is this wholly symmetric?  Define
-$\bF=\text{diag}\left(0,\,1,\,1,\,1\right)$, and then the Wald
-statistic for this problem is given by
+Recall that $\bld{d}^{(\im)}$ is the vector of first-order cumulants
+Eq.~\eqref{eqn:dim} of the Kramer-Moyal formula
+Eq.~\eqref{kramermoyal}, estimated via linear regression in
+Eq.~\eqref{linear-phase}.  This test is formulating the question, is
+there any asymmetry in the diffusion~PDF, or is it symmetric?  Define
+$\bF=\diag\left(0,\,1,\,1,\,1\right)$, and then the Wald statistic for
+this problem is given by
 \begin{equation}
   T_2 = \left(\bF\hat{\bs{\beta}}\right)^T
   \left(\bF\wh{\bsS}_{\beta}\bF^T\right)^{-1}
   \bF\hat{\bs{\beta}} \overset{d\,|\,H_0}{=} \chi^2_3.
 \end{equation}
-This then provides us with the means to test for Hermitian structure
-in the phase.  The information of the $\bld{d}^{(\im)}$ vector is
-important for two reasons: it provides us with a method of detecting
-Hermitian structure present in the data and we may estimate the
-orientation of that direction and so both the magnitude and the
+This statistic provides us with a method to test for Hermitian
+structure in the phase.  The information of the $\bld{d}^{(\im)}$
+vector is important for two reasons: it provides us with a method of
+detecting Hermitian structure present in the data and we may estimate
+the orientation of that direction and so both the magnitude and the
 directionality of this object is of interest.
 
 \subsubsection{Existence of linear phase structure}
@@ -1090,9 +1103,9 @@ complicated phase.  We therefore fit a linear term to the phase, to
 capture the main hermitian structure.  If the structure is consistent
 with bending, then the linear terms should capture most of the
 structure in the phase.  In this case $R^2$ (the coefficient of
-determination) from fitting the linear phase model should take a value
-near one.  By calculating $R^2$ we may determine how near linear the
-phase is.
+determination) from fitting the linear phase model in
+Eq.~\eqref{linear-phase} should take a value near one.  By calculating
+$R^2$ we may determine how near linear the phase is.
 
 We define $R^2$ to be the fraction of energy explained by the linear
 term
@@ -1101,15 +1114,15 @@ term
     + \hat{d}_2^{(q)}q_{L_0+l,2} + \hat{d}_3^{(q)}q_{L_0+l,3}\right)^2}
   {\sum_{l=1}^{L-L_0}\phi_l^2}.
 \end{equation}
-Note that when estimating $\bld{d}$ we also estimate the $\Phi_0(q)$
-term, and so no non-zero mean phase terms will bias our estimation of
-$\bld{d}$ (it is bad practice to estimate the linear term before the
-main effect).  Recall that we want to keep a potentially non-zero main
-effect in the model (insufficient phase removal) and then see what
-fraction of energy is explained by the linear (Hermitian) terms.  A
-Taylor series expansion may justify this (\textit{cf.}
-Eq.~\eqref{taylor:phase2}), and see also the plots in
-Figs.~\ref{bending} and~\ref{forking}.  Since it is true that
+Note that when estimating $\bld{d}$ in Eq.~\eqref{linear-phase} we
+also estimate the $\Phi_0(q)$ term, and so no non-zero mean phase
+terms will bias our estimation of $\bld{d}$ (it is poor statistical
+practice to estimate the linear term before the main effect).  Recall
+that we want to keep a potentially non-zero main effect in the model
+(insufficient phase removal) and then see what fraction of energy is
+explained by the linear (Hermitian) terms.  A Taylor series expansion
+may justify this (Eq.~\eqref{taylor:phase2}), and see also the plots
+in Figs.~\ref{bending} and~\ref{forking}.  Since it is true that
 $\sum_j\q_j\approx\bld{0}$ it however makes little difference whether
 one includes a mean term or not when estimating the linear terms.
 Note that unlike DTI we must sample the entire sphere instead of a
@@ -1154,16 +1167,16 @@ estimated fitted models we would use the objective function:
   \hat{\bs{\theta}} = \argmin \sum_{l=L_0+1}^L \left[\wt{A}(\q_l) -
   \cA(\bq_l)\right]^2,
 \end{equation}
-where $\hat{\bs{\theta}}=()$ \textbf{[WHAT is $\hat{\bs{\theta}}$]} and
-$\cA(\bq_l)$ is given by Eqs.~\eqref{isotropic}, \eqref{singletensor}
-or~\eqref{doubletensor}.  This however does not allow us to easily
-chose between the models of Eqs.~\eqref{isotropic},
+where $\hat{\bs{\theta}}=()$ \textbf{[WHAT is $\hat{\bs{\theta}}$]}
+and $\cA(\bq_l)$ is given by Eqs.~\eqref{isotropic},
+\eqref{singletensor} or~\eqref{doubletensor}.  This however does not
+allow us to easily chose between the models of Eqs.~\eqref{isotropic},
 \eqref{singletensor} or~\eqref{doubletensor}.  It is natural that
 Eq.~\eqref{doubletensor} fits the data better than
 Eq.~\eqref{isotropic} because it has more parameters.  We denote the
 number of parameters in any one model by $p$. We therefore account for
 ``learning of the noise'' by using a model choice procedure.  We here
-apply the Bayesian Information Criterion (BIC) \citep{Schwarz},
+apply the Bayesian information criterion (BIC) \citep{Schwarz},
 % as this is known to penalize overfitting better than Aikake's
 % Information Criterion AIC 
 and define the new optimization problem of
@@ -1253,9 +1266,9 @@ standard Gaussian diffusion tensor model
   \q\rangle^2-\lambda_2 \langle\bsu_2,
   \q\rangle^2-\lambda_3\langle\bsu_3, \q\rangle^2\right),
 \end{equation} 
-where $\bsL=\text{diag}(\lambda_1,\lambda_2,\lambda_3)$ is the
-diagonal matrix of eigenvalues and $\bld{V}=\{\bsu_k\}_k$ is the
-matrix of eigenvectors.  The half-Gaussian diffusion model is given by
+where $\bsL=\diag(\lambda_1,\lambda_2,\lambda_3)$ is the diagonal
+matrix of eigenvalues and $\bld{V}=\{\bsu_k\}_k$ is the matrix of
+eigenvectors.  The half-Gaussian diffusion model is given by
 \begin{eqnarray}
   \nonumber
   \text{HG}(\q;\bsL,\bld{V}) &=&
@@ -1301,11 +1314,11 @@ does not become too large, in absolute value.
 We propose five different fiber population structures in order to
 investigate the typical characteristics of diffusion PDFs discussed
 previously.  Table~\ref{simulationtable} provides a summary of these
-models, where $\bsL^{(1)}=0.04\cdot{\text{diag}}(17\times4,8,8)$,
-$\bsL^{(2)}=0.04\cdot{\text{diag}}(84/3,84/3,84/3)$.  The orientation
-of the first diffusion~PDFs is chosen randomly, and is given by the
-basis $\bld{V}$, while the orientation of the second PDF is rotated by
-an angle of $\theta$ in the third axis ($q_3$).
+models, where $\bsL^{(1)}=0.04\cdot\diag(17\times4,8,8)$,
+$\bsL^{(2)}=0.04\cdot\diag(84/3,84/3,84/3)$.  The orientation of the
+first diffusion~PDFs is chosen randomly, and is given by the basis
+$\bld{V}$, while the orientation of the second PDF is rotated by an
+angle of $\theta$ in the third axis ($q_3$).
 % The notation $\text{TPD}(\q_l)$ is a truncated prolate diffusion
 % process, $\text{PD}(\q_l)$ is a prolate diffusion process,
 % $\text{ID}(\q_l)$ is an isotropic diffusion process,
@@ -1465,23 +1478,23 @@ the sphere.
     \end{minipage}
   \end{center}
   \caption{Estimating the linear phase term under the sparse sampling
-    scheme: \textbf{(a)} the norm of $\bd^{(\text{im})}$ and
-    \textbf{(b)} the coefficient of determination $R^2$ from the
-    linear regression.  The two real-valued diffusions (prolate, blue)
-    and (isotropic, purple), forking fibre (black), a single
-    asymmetric diffusion (red), or bending fibre (yellow).}
+    scheme: \textbf{(a)} the norm of $\bd^{(\im)}$ and \textbf{(b)}
+    the coefficient of determination $R^2$ from the linear regression.
+    The two real-valued diffusions (prolate, blue) and (isotropic,
+    purple), forking fibre (black), a single asymmetric diffusion
+    (red), or bending fibre (yellow).}
   \label{fig-1} 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Additional statistics of interest when estimating the linear phase
-structure are the norm of the imaginary vector $\bd^{(\text{im})}$ and
-the coefficient of determination $R^2$.  In Fig.~\ref{fig-1} it is
+structure are the norm of the imaginary vector $\bd^{(\im)}$ and the
+coefficient of determination $R^2$.  In Fig.~\ref{fig-1} it is
 apparent that the asymmetric diffusion~PDFs are clearly distinguished
 from the symmetric PDFs, by observing different values of the Wald
 statistic \textbf{[is this correct?!?]} and that the imaginary
 structure is described by the varying value of the norm of the
-imaginary vector $\bd^{(\text{im})}$.  \textbf{[WHAT?!?]}
+imaginary vector $\bd^{(\im)}$.  \textbf{[WHAT?!?]}
 
 We would like to distinguish between simple forms of the phase, as
 would be typical for bending, and more complex forms that cannot be
